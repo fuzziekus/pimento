@@ -13,10 +13,10 @@ import (
 
 type Credential struct {
 	ID          int
-	Description string `gorm:"unique;not null"`
-	UserId      string
-	Password    string
-	Memo        string
+	Description string `gorm:"unique;not null" csv:"description"`
+	UserId      string `csv:"user_id"`
+	Password    string `csv:"password"`
+	Memo        string `csv:"memo"`
 	CreatedAt   time.Time
 	UpdateAt    sql.NullTime
 }
@@ -63,7 +63,6 @@ func (r CredentialRepository) GetAll() Credentials {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println(plaintext)
 			c.Password = string(plaintext)
 		}
 	}
