@@ -56,17 +56,6 @@ func (r CredentialRepository) Create(c Credential) {
 func (r CredentialRepository) GetAll() Credentials {
 	credentials := Credentials{}
 	Mgr().db.Find(&credentials)
-
-	for _, c := range credentials {
-		if c.Password != "" {
-			plaintext, err := crypto.Decrypt(config.Mgr().Secret_key, c.Password)
-			if err != nil {
-				log.Fatal(err)
-			}
-			c.Password = string(plaintext)
-		}
-	}
-
 	return credentials
 }
 

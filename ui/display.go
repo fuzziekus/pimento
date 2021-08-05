@@ -2,9 +2,12 @@ package ui
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 	"strings"
 
+	"github.com/fuzziekus/pimento/config"
+	"github.com/fuzziekus/pimento/crypto"
 	"github.com/fuzziekus/pimento/db"
 )
 
@@ -41,8 +44,17 @@ func (e Flags) DisplaySpecifyColumn(c db.Credential) {
 		for _, key := range ColumnOrder {
 			v := uv.FieldByName(key).Interface()
 			if f.Name == key && e.flagVar&FlagMapping[key] == FlagMapping[key] {
-				targets = append(targets, v.(string))
 				fmtTemplate = append(fmtTemplate, "%s")
+
+				if f.Name == "Password" {
+					plaintext, err := crypto.Decrypt(config.Mgr().Secret_key, v.(string))
+					if err != nil {
+						log.Fatal(err)
+					}
+					targets = append(targets, string(plaintext))
+				} else {
+					targets = append(targets, v.(string))
+				}
 			}
 		}
 	}
