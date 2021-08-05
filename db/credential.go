@@ -67,13 +67,6 @@ func (r CredentialRepository) GetSingleRowByDescription(description string) Cred
 		log.Fatalf("対象のレコードが見つかりませんでした")
 	}
 
-	if credential.Password != "" {
-		plaintext, err := crypto.Decrypt(config.Mgr().Secret_key, credential.Password)
-		if err != nil {
-			log.Fatal(err)
-		}
-		credential.Password = string(plaintext)
-	}
 	return credential
 }
 
