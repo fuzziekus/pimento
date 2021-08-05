@@ -1,10 +1,14 @@
 package db
 
 import (
+	// "crypto"
 	"database/sql"
 	"fmt"
-	"os"
+	"log"
 	"time"
+
+	"github.com/fuzziekus/pimento/config"
+	"github.com/fuzziekus/pimento/crypto"
 )
 
 type Credential struct {
@@ -26,10 +30,14 @@ func NewCredentialRepository() CredentialRepository {
 }
 
 func (r CredentialRepository) CreateWithRawVal(description, user_id, password, memo string) {
+	cipertext, err := crypto.Encrypt(config.Mgr().Secret_key, password)
+	if err != nil {
+		log.Fatal(err)
+	}
 	credential := Credential{
 		Description: description,
 		UserId:      user_id,
-		Password:    password,
+		Password:    string(cipertext),
 		Memo:        memo,
 	}
 	res := Mgr().db.Create(&credential)
@@ -48,6 +56,18 @@ func (r CredentialRepository) Create(c Credential) {
 func (r CredentialRepository) GetAll() Credentials {
 	credentials := Credentials{}
 	Mgr().db.Find(&credentials)
+
+	for _, c := range credentials {
+		if c.Password != "" {
+			plaintext, err := crypto.Decrypt(config.Mgr().Secret_key, c.Password)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(plaintext)
+			c.Password = string(plaintext)
+		}
+	}
+
 	return credentials
 }
 
@@ -56,8 +76,15 @@ func (r CredentialRepository) GetSingleRowByDescription(description string) Cred
 		// Description: description,
 	}
 	if err := Mgr().db.First(&credential, "description = ?", description).Error; err != nil {
-		fmt.Println("対象のレコードが見つかりませんでした")
-		os.Exit(1)
+		log.Fatalf("対象のレコードが見つかりませんでした")
+	}
+
+	if credential.Password != "" {
+		plaintext, err := crypto.Decrypt(config.Mgr().Secret_key, credential.Password)
+		if err != nil {
+			log.Fatal(err)
+		}
+		credential.Password = string(plaintext)
 	}
 	return credential
 }

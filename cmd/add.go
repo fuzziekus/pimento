@@ -27,7 +27,7 @@ var addCmd = &cobra.Command{
 	Short: "クレデンシャル情報を追加で保存します",
 	Long:  `クレデンシャル情報を追加で保存します`,
 	Run: func(cmd *cobra.Command, args []string) {
-		editflags := ui.EditFlags{}
+		editflags := ui.Flags{}
 		editflags.All = true
 		credential := editflags.GenerateCredentialFromInputInterfaces()
 		db.NewCredentialRepository().Create(credential)

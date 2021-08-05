@@ -16,11 +16,12 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/fuzziekus/pimento/db"
+	"github.com/fuzziekus/pimento/ui"
 	"github.com/spf13/cobra"
 )
+
+var listFlags ui.Flags
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
@@ -29,8 +30,12 @@ var listCmd = &cobra.Command{
 	Long:  `保存しているクレデンシャルの一覧を表示します. ※PWは表示されません`,
 	Run: func(cmd *cobra.Command, args []string) {
 		credentials := db.NewCredentialRepository().GetAll()
+		if !listFlags.NoHeader {
+			listFlags.DisplayHeader()
+		}
+
 		for _, c := range credentials {
-			fmt.Printf("%s\t%s\t%s\n", c.Description, c.UserId, c.Memo)
+			listFlags.DisplaySpecifyColumn(c)
 		}
 	},
 }
@@ -39,13 +44,10 @@ func init() {
 	// fmt.Println(config.Mgr().Db.Path)
 	rootCmd.AddCommand(listCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	listCmd.Flags().BoolVarP(&listFlags.NoHeader, "noheader", "n", false, "list with no header")
+	listCmd.Flags().BoolVarP(&listFlags.NoPass, "all", "a", true, "list all column")
+	listCmd.Flags().BoolVarP(&listFlags.Description, "description", "d", false, "list description")
+	listCmd.Flags().BoolVarP(&listFlags.UserId, "user_id", "u", false, "list user_id")
+	listCmd.Flags().BoolVarP(&listFlags.Password, "password", "p", false, "list password")
+	listCmd.Flags().BoolVarP(&listFlags.Memo, "memo", "m", false, "list memo")
 }

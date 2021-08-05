@@ -24,18 +24,14 @@ package cmd
 import (
 	"github.com/fuzziekus/pimento/config"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "pimento",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "TUI PWマネージャ",
+	Long:  `pimento TUI PWマネージャ管理ツール`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -51,11 +47,19 @@ func init() {
 	cobra.OnInitialize(config.InitConfig)
 
 	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
+	// Cobra supports  flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&config.CfgFile, "config", "", "config file (default is $XDG_CONFIG_HOME/pimento/config.yaml)")
 
+	// rootCmd.PersistentFlags().StringVarP(&config.Cfg.Secret_key, "secret_key", "", "", "pimento secret key")
+	// rootCmd.PersistentFlags().StringVar(&config.Cfg.Secret_key, "secret_key", "", "pimento secret key")
+	rootCmd.PersistentFlags().String("secret_key", "", "pimento secret key")
+
+	viper.BindPFlag("pimento_secret_key", rootCmd.PersistentFlags().Lookup("secret_key"))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// fmt.Println(SecretKey)
+	// fmt.Println(cMgr().Secret_key)
+	// fmt.Println(viper.GetString("pimento_secret_key"))
 }

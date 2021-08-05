@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var editflags ui.EditFlags
+var editflags ui.Flags
 
 // editCmd represents the edit command
 var editCmd = &cobra.Command{
@@ -46,7 +46,7 @@ var editCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(editCmd)
 
-	editCmd.Flags().BoolVarP(&editflags.All, "all", "a", true, "edit all column [default true]")
+	editCmd.Flags().BoolVarP(&editflags.All, "all", "a", true, "edit all column")
 	editCmd.Flags().BoolVarP(&editflags.Description, "description", "d", false, "edit description")
 	editCmd.Flags().BoolVarP(&editflags.UserId, "user_id", "u", false, "edit user_id")
 	editCmd.Flags().BoolVarP(&editflags.Password, "password", "p", false, "edit password")

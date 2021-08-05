@@ -12,10 +12,13 @@ type config struct {
 	Db struct {
 		Path string
 	}
+	Secret_key string
 }
 
 var cfg config
 var CfgFile string
+
+// var SecretKey string
 
 func Mgr() config { return cfg }
 
@@ -49,7 +52,7 @@ func InitConfig() {
 		viper.SetConfigType("yaml")
 		viper.SetConfigName("config")
 	}
-
+	viper.BindEnv("secret_key", "PIMENTO_SECRET_KEY")
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
@@ -65,5 +68,10 @@ func InitConfig() {
 		db_file_path := filepath.Join(xdg_data_home, "pimento", "credential.db")
 		createDir(filepath.Dir(db_file_path))
 		cfg.Db.Path = db_file_path
+	}
+
+	cfg.Secret_key = viper.GetString("pimento_secret_key")
+	if cfg.Secret_key == "" {
+		cfg.Secret_key = viper.GetString("secret_key")
 	}
 }

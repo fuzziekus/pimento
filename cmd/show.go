@@ -16,34 +16,33 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/fuzziekus/pimento/db"
+	"github.com/fuzziekus/pimento/ui"
 	"github.com/spf13/cobra"
 )
+
+var showFlags ui.Flags
 
 // showCmd represents the show command
 var showCmd = &cobra.Command{
 	Use:   "show",
+	Args:  cobra.MinimumNArgs(1),
 	Short: "対象のクレデンシャルを1件取得する",
-	Long:  `対象のクレデンシャルを1件取得する`,
+	Long: `対象のクレデンシャルを1件取得する.
+	デフォルトではパスワードは表示しない`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := db.NewCredentialRepository().GetSingleRowByDescription(args[0])
-		fmt.Printf("%s\t%s\t%s\n", c.Description, c.UserId, c.Memo)
-
+		// fmt.Printf("%s\t%s\t%s\n", c.Description, c.UserId, c.Memo)
+		showFlags.DisplaySpecifyColumn(c)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(showCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// showCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// showCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	showCmd.Flags().BoolVarP(&showFlags.NoPass, "all", "a", true, "show all column(without password)")
+	showCmd.Flags().BoolVarP(&showFlags.Description, "description", "d", false, "show description")
+	showCmd.Flags().BoolVarP(&showFlags.UserId, "user_id", "u", false, "show user_id")
+	showCmd.Flags().BoolVarP(&showFlags.Password, "password", "p", false, "show password")
+	showCmd.Flags().BoolVarP(&showFlags.Memo, "memo", "m", false, "show memo")
 }
