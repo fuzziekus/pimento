@@ -16,7 +16,7 @@ var isInitialized bool
 var mgr manager
 
 func newManager() manager {
-	db, err := gorm.Open("sqlite3", config.Mgr().Db.Path)
+	db, err := gorm.Open("sqlite3", config.Mgr().Db.Path+".temp")
 	if err != nil {
 		log.Fatal("Failed to init db:", err)
 	}
@@ -30,4 +30,8 @@ func Mgr() manager {
 		isInitialized = true
 	}
 	return mgr
+}
+
+func (m manager) Close() {
+	m.db.Close()
 }

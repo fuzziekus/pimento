@@ -1,18 +1,12 @@
 package ui
 
 import (
-	"bufio"
-	"fmt"
 	"log"
-	"os"
 	"reflect"
-	"strings"
-	"syscall"
 
 	"github.com/fuzziekus/pimento/config"
-	"github.com/fuzziekus/pimento/crypto"
 	"github.com/fuzziekus/pimento/db"
-	"golang.org/x/term"
+	"github.com/fuzziekus/pimento/ui/util"
 )
 
 type input struct {
@@ -22,37 +16,6 @@ type input struct {
 }
 
 type inputList []input
-
-func inputString(annotation string) string {
-	var input string
-	scanner := bufio.NewScanner(os.Stdin)
-	message := "input " + annotation + "> "
-	fmt.Print(message)
-	for scanner.Scan() {
-		input = scanner.Text()
-		if input != "" {
-			break
-		}
-		fmt.Print(message)
-	}
-	return strings.TrimSpace(input)
-}
-
-func inputSecretString(annotation string) string {
-	var input string
-	message := "input " + annotation + "> "
-
-	for input == "" {
-		fmt.Print(message)
-		bytePassword, err := term.ReadPassword(int(syscall.Stdin))
-		if err != nil {
-			break
-		}
-		input = string(bytePassword)
-		fmt.Println("")
-	}
-	return strings.TrimSpace(input)
-}
 
 func (e *Flags) calcCondition() {
 	e.flagVar = 0
@@ -102,9 +65,9 @@ func (e Flags) displayInteractiveInput() inputList {
 			annotation: s + " for credential",
 		}
 		if s == "Password" {
-			tmp.val = inputSecretString(tmp.annotation)
+			tmp.val = util.InputSecretString(tmp.annotation)
 		} else {
-			tmp.val = inputString(tmp.annotation)
+			tmp.val = util.InputString(tmp.annotation)
 		}
 
 		template = append(template, tmp)
@@ -130,7 +93,7 @@ func generateCredential(inputlist inputList) db.Credential {
 	}
 
 	if c.Password != "" {
-		cipertext, err := crypto.Encrypt(config.Mgr().Secret_key, c.Password)
+		cipertext, err := config.RowCryptor.Encrypt(c.Password)
 		if err != nil {
 			log.Fatal(err)
 		}

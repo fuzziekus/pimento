@@ -20,7 +20,6 @@ import (
 	"log"
 
 	"github.com/fuzziekus/pimento/config"
-	"github.com/fuzziekus/pimento/crypto"
 	"github.com/fuzziekus/pimento/db"
 	"github.com/jszwec/csvutil"
 	"github.com/spf13/cobra"
@@ -41,7 +40,7 @@ var importCmd = &cobra.Command{
 		var credentials db.Credentials
 		csvutil.Unmarshal(b, &credentials)
 		for _, c := range credentials {
-			cipertext, err := crypto.Encrypt(config.Mgr().Secret_key, c.Password)
+			cipertext, err := config.RowCryptor.Encrypt(c.Password)
 			if err != nil {
 				log.Fatal(err)
 			}

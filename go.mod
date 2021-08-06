@@ -3,6 +3,7 @@ module github.com/fuzziekus/pimento
 go 1.16
 
 require (
+	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jszwec/csvutil v1.5.0
 	github.com/mattn/go-sqlite3 v1.14.8

@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/fuzziekus/pimento/config"
-	"github.com/fuzziekus/pimento/crypto"
 	"github.com/fuzziekus/pimento/db"
 )
 
@@ -47,7 +46,7 @@ func (e Flags) DisplaySpecifyColumn(c db.Credential) {
 				fmtTemplate = append(fmtTemplate, "%s")
 
 				if f.Name == "Password" {
-					plaintext, err := crypto.Decrypt(config.Mgr().Secret_key, v.(string))
+					plaintext, err := config.RowCryptor.Decrypt(v.(string))
 					if err != nil {
 						log.Fatal(err)
 					}

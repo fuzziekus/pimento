@@ -22,7 +22,10 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"os"
+
 	"github.com/fuzziekus/pimento/config"
+	"github.com/fuzziekus/pimento/db"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -41,6 +44,15 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
+
+	// DB を外部から使用できないよう暗号化する
+
+	db.Mgr().Close() // 暗号化前にDBのコネクションをクローズ
+	cobra.CheckErr(config.DbCryptor.EncryptFile(config.Mgr().Db.Path+".temp", config.Mgr().Db.Path))
+	if err := os.Remove(config.Mgr().Db.Path + ".temp"); err != nil {
+		cobra.CheckErr(err)
+	}
+	config.WriteConfig(false)
 }
 
 func init() {
