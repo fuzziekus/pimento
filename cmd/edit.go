@@ -32,10 +32,8 @@ var editCmd = &cobra.Command{
 	Short: "対象のクレデンシャルを更新する",
 	Long:  `対象のクレデンシャルを更新する`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// editflags.calcCondition()
-		// fmt.Print(editflags.flagVar)
 		r := db.NewCredentialRepository()
-		c := r.GetSingleRowByDescription(args[0])
+		c := r.GetSingleRowByItemName(args[0])
 		newcredential := editflags.GenerateCredentialFromInputInterfaces()
 		newcredential.UpdateAt.Time = time.Now()
 		newcredential.UpdateAt.Valid = true
@@ -47,8 +45,8 @@ func init() {
 	rootCmd.AddCommand(editCmd)
 
 	editCmd.Flags().BoolVarP(&editflags.All, "all", "a", true, "edit all column")
-	editCmd.Flags().BoolVarP(&editflags.Description, "description", "d", false, "edit description")
-	editCmd.Flags().BoolVarP(&editflags.UserId, "user_id", "u", false, "edit user_id")
+	editCmd.Flags().BoolVarP(&editflags.ItemName, "item-name", "i", false, "edit item name")
+	editCmd.Flags().BoolVarP(&editflags.UserName, "user-name", "u", false, "edit user name")
 	editCmd.Flags().BoolVarP(&editflags.Password, "password", "p", false, "edit password")
-	editCmd.Flags().BoolVarP(&editflags.Memo, "memo", "m", false, "edit memo")
+	editCmd.Flags().BoolVarP(&editflags.Tag, "tag", "t", false, "edit tag")
 }

@@ -11,13 +11,13 @@ import (
 )
 
 type Credential struct {
-	ID          int
-	Description string `gorm:"unique;not null" csv:"description"`
-	UserId      string `csv:"user_id"`
-	Password    string `csv:"password"`
-	Memo        string `csv:"memo"`
-	CreatedAt   time.Time
-	UpdateAt    sql.NullTime
+	ID        int
+	ItemName  string `gorm:"unique;not null" csv:"item_name"`
+	UserName  string `csv:"user_name"`
+	Password  string `csv:"password"`
+	Tag       string `csv:"tag"`
+	CreatedAt time.Time
+	UpdateAt  sql.NullTime
 }
 
 type Credentials []Credential
@@ -28,16 +28,16 @@ func NewCredentialRepository() CredentialRepository {
 	return CredentialRepository{}
 }
 
-func (r CredentialRepository) CreateWithRawVal(description, user_id, password, memo string) {
+func (r CredentialRepository) CreateWithRawVal(item_name, user_name, password, tag string) {
 	cipertext, err := config.RowCryptor.Encrypt(password)
 	if err != nil {
 		log.Fatal(err)
 	}
 	credential := Credential{
-		Description: description,
-		UserId:      user_id,
-		Password:    string(cipertext),
-		Memo:        memo,
+		ItemName: item_name,
+		UserName: user_name,
+		Password: string(cipertext),
+		Tag:      tag,
 	}
 	res := Mgr().db.Create(&credential)
 	if res.Error != nil {
@@ -58,11 +58,11 @@ func (r CredentialRepository) GetAll() Credentials {
 	return credentials
 }
 
-func (r CredentialRepository) GetSingleRowByDescription(description string) Credential {
+func (r CredentialRepository) GetSingleRowByItemName(item_name string) Credential {
 	credential := Credential{
-		// Description: description,
+		// ItemName: item_name,
 	}
-	if err := Mgr().db.First(&credential, "description = ?", description).Error; err != nil {
+	if err := Mgr().db.First(&credential, "item_name = ?", item_name).Error; err != nil {
 		log.Fatalf("対象のレコードが見つかりませんでした")
 	}
 

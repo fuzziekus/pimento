@@ -1,28 +1,28 @@
 package ui
 
 var ColumnOrder = []string{
-	"Description",
-	"UserId",
+	"ItemName",
+	"UserName",
 	"Password",
-	"Memo",
+	"Tag",
 }
 
 var FlagMapping = map[string]int{
-	"Description": 1,
-	"UserId":      2,
-	"Password":    4,
-	"Memo":        8,
-	"NoPass":      11,
-	"All":         15,
+	"ItemName": 1,
+	"UserName": 2,
+	"Password": 4,
+	"Tag":      8,
+	"NoPass":   11,
+	"All":      15,
 }
 
 type Flags struct {
-	All         bool
-	Description bool
-	UserId      bool
-	Password    bool
-	Memo        bool
-	NoPass      bool
-	flagVar     int
-	NoHeader    bool
+	All      bool
+	ItemName bool
+	UserName bool
+	Password bool
+	Tag      bool
+	NoPass   bool
+	flagVar  int
+	NoHeader bool
 }

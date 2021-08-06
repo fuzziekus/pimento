@@ -31,8 +31,7 @@ var showCmd = &cobra.Command{
 	Long: `対象のクレデンシャルを1件取得する.
 	デフォルトではパスワードは表示しない`,
 	Run: func(cmd *cobra.Command, args []string) {
-		c := db.NewCredentialRepository().GetSingleRowByDescription(args[0])
-		// fmt.Printf("%s\t%s\t%s\n", c.Description, c.UserId, c.Memo)
+		c := db.NewCredentialRepository().GetSingleRowByItemName(args[0])
 		showFlags.DisplaySpecifyColumn(c)
 	},
 }
@@ -41,8 +40,8 @@ func init() {
 	rootCmd.AddCommand(showCmd)
 
 	showCmd.Flags().BoolVarP(&showFlags.NoPass, "all", "a", true, "show all column(without password)")
-	showCmd.Flags().BoolVarP(&showFlags.Description, "description", "d", false, "show description")
-	showCmd.Flags().BoolVarP(&showFlags.UserId, "user_id", "u", false, "show user_id")
+	showCmd.Flags().BoolVarP(&showFlags.ItemName, "item-name", "i", false, "show item name")
+	showCmd.Flags().BoolVarP(&showFlags.UserName, "user-name", "u", false, "show user name")
 	showCmd.Flags().BoolVarP(&showFlags.Password, "password", "p", false, "show password")
-	showCmd.Flags().BoolVarP(&showFlags.Memo, "memo", "m", false, "show memo")
+	showCmd.Flags().BoolVarP(&showFlags.Tag, "tag", "t", false, "show tag")
 }

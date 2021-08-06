@@ -22,7 +22,7 @@ func (e *Flags) calcCondition() {
 
 	// カラム指定がある場合は、All フラグは false にし、
 	// 対象カラムだけ更新するようにする
-	if e.Description || e.UserId || e.Password || e.Memo {
+	if e.ItemName || e.UserName || e.Password || e.Tag {
 		e.All = false
 		e.NoPass = false
 	}

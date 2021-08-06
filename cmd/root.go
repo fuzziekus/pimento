@@ -35,9 +35,6 @@ var rootCmd = &cobra.Command{
 	Use:   "pimento",
 	Short: "TUI PWマネージャ",
 	Long:  `pimento TUI PWマネージャ管理ツール`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -45,33 +42,24 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
 
+	// 暗号化前にDBのコネクションをクローズ
+	db.Mgr().Close()
 	// DB を外部から使用できないよう暗号化する
-
-	db.Mgr().Close() // 暗号化前にDBのコネクションをクローズ
 	cobra.CheckErr(config.DbCryptor.EncryptFile(config.Mgr().Db.Path+".temp", config.Mgr().Db.Path))
+
+	// 一時的に復号していたDBファイルを削除
 	if err := os.Remove(config.Mgr().Db.Path + ".temp"); err != nil {
 		cobra.CheckErr(err)
 	}
+	// 初回起動の場合、コンフィグを設定
 	config.WriteConfig(false)
 }
 
 func init() {
 	cobra.OnInitialize(config.InitConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports  flags, which, if defined here,
-	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&config.CfgFile, "config", "", "config file (default is $XDG_CONFIG_HOME/pimento/config.yaml)")
-
-	// rootCmd.PersistentFlags().StringVarP(&config.Cfg.Secret_key, "secret_key", "", "", "pimento secret key")
-	// rootCmd.PersistentFlags().StringVar(&config.Cfg.Secret_key, "secret_key", "", "pimento secret key")
 	rootCmd.PersistentFlags().String("secret_key", "", "pimento secret key")
-
 	viper.BindPFlag("pimento_secret_key", rootCmd.PersistentFlags().Lookup("secret_key"))
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	// fmt.Println(SecretKey)
-	// fmt.Println(cMgr().Secret_key)
-	// fmt.Println(viper.GetString("pimento_secret_key"))
+
 }

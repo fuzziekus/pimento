@@ -46,8 +46,8 @@ func init() {
 
 	listCmd.Flags().BoolVarP(&listFlags.NoHeader, "noheader", "n", false, "list with no header")
 	listCmd.Flags().BoolVarP(&listFlags.NoPass, "all", "a", true, "list all column")
-	listCmd.Flags().BoolVarP(&listFlags.Description, "description", "d", false, "list description")
-	listCmd.Flags().BoolVarP(&listFlags.UserId, "user_id", "u", false, "list user_id")
+	listCmd.Flags().BoolVarP(&listFlags.ItemName, "item-name", "i", false, "list item name")
+	listCmd.Flags().BoolVarP(&listFlags.UserName, "user-name", "u", false, "list user name")
 	listCmd.Flags().BoolVarP(&listFlags.Password, "password", "p", false, "list password")
-	listCmd.Flags().BoolVarP(&listFlags.Memo, "memo", "m", false, "list memo")
+	listCmd.Flags().BoolVarP(&listFlags.Tag, "tag", "t", false, "list tag")
 }

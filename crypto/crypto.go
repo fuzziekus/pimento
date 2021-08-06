@@ -20,7 +20,6 @@ func NewCryptor(key string) *Cryptor {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// mgr = Cryptor{gcm: gcm}
 	return &Cryptor{gcm: gcm}
 }
 
