@@ -25,7 +25,7 @@ var RowCryptor *crypto.Cryptor
 
 // var SecretKey string
 
-func Mgr() config { return cfg }
+func Mgr() *config { return &cfg }
 
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
@@ -107,7 +107,7 @@ func existFile(name string) bool {
 
 func WriteConfig(exeistCheck bool) error {
 	configFileName := "config.yaml"
-	buf, err := yaml.Marshal(cfg)
+	buf, err := yaml.Marshal(Mgr())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -120,4 +120,12 @@ func WriteConfig(exeistCheck bool) error {
 	}
 
 	return os.WriteFile(configFilePath, buf, 0644)
+}
+
+func (c *config) UpdateSecretKey() {
+	secretKey := ""
+	for len(secretKey) != 16 && len(secretKey) != 32 && len(secretKey) != 64 {
+		secretKey = util.InputSecretString("Secret Key (16 or 32 or 64 byte)")
+	}
+	c.Secret_key = secretKey
 }

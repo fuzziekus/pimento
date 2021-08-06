@@ -29,7 +29,6 @@ func NewCredentialRepository() CredentialRepository {
 }
 
 func (r CredentialRepository) CreateWithRawVal(description, user_id, password, memo string) {
-	// cipertext, err := crypto.Encrypt(config.Mgr().Secret_key, password)
 	cipertext, err := config.RowCryptor.Encrypt(password)
 	if err != nil {
 		log.Fatal(err)

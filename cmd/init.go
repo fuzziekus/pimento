@@ -26,7 +26,8 @@ var initCmd = &cobra.Command{
 	Short: "pimento の設定ファイルを生成する",
 	Long:  `pimento の設定ファイルを生成する`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println("init called")
+		c := config.Mgr()
+		c.UpdateSecretKey()
 		config.WriteConfig(true)
 	},
 }
