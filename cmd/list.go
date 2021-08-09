@@ -30,24 +30,20 @@ var listCmd = &cobra.Command{
 	Long:  `保存しているクレデンシャルの一覧を表示します. ※PWは表示されません`,
 	Run: func(cmd *cobra.Command, args []string) {
 		credentials := db.NewCredentialRepository().GetAll()
-		if !listFlags.NoHeader {
-			listFlags.DisplayHeader()
-		}
-
-		for _, c := range credentials {
-			listFlags.DisplaySpecifyColumn(c)
-		}
+		listFlags.DisplayRows(credentials)
 	},
 }
 
 func init() {
-	// fmt.Println(config.Mgr().Db.Path)
 	rootCmd.AddCommand(listCmd)
 
 	listCmd.Flags().BoolVarP(&listFlags.NoHeader, "noheader", "n", false, "list with no header")
-	listCmd.Flags().BoolVarP(&listFlags.NoPass, "all", "a", true, "list all column")
+	listCmd.Flags().BoolVarP(&listFlags.NoPass, "all", "a", true, "list all column without password")
+	listCmd.Flags().BoolVarP(&listFlags.All, "all-with-password", "", false, "list all column with password")
 	listCmd.Flags().BoolVarP(&listFlags.ItemName, "item-name", "i", false, "list item name")
 	listCmd.Flags().BoolVarP(&listFlags.UserName, "user-name", "u", false, "list user name")
 	listCmd.Flags().BoolVarP(&listFlags.Password, "password", "p", false, "list password")
 	listCmd.Flags().BoolVarP(&listFlags.Tag, "tag", "t", false, "list tag")
+	listCmd.Flags().BoolVarP(&listFlags.FormatCSV, "csv", "c", false, "output fomat csv")
+	listCmd.Flags().BoolVarP(&listFlags.FormatTable, "table", "", true, "output fomat ascii table")
 }

@@ -44,13 +44,17 @@ func Execute() {
 
 	// 暗号化前にDBのコネクションをクローズ
 	db.Mgr().Close()
-	// DB を外部から使用できないよう暗号化する
-	cobra.CheckErr(config.DbCryptor.EncryptFile(config.Mgr().Db.Path+".temp", config.Mgr().Db.Path))
 
-	// 一時的に復号していたDBファイルを削除
-	if err := os.Remove(config.Mgr().Db.Path + ".temp"); err != nil {
-		cobra.CheckErr(err)
+	// DB を外部から使用できないよう暗号化する
+	tempDB := config.Mgr().Db.Path + ".temp"
+	if _, err := os.Stat(tempDB); os.IsNotExist(err) {
+		cobra.CheckErr(config.DbCryptor.EncryptFile(tempDB, config.Mgr().Db.Path))
+		// 一時的に復号していたDBファイルを削除
+		if err := os.Remove(config.Mgr().Db.Path + ".temp"); err != nil {
+			cobra.CheckErr(err)
+		}
 	}
+
 	// 初回起動の場合、コンフィグを設定
 	config.WriteConfig(false)
 }

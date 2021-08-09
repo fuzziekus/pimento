@@ -32,16 +32,19 @@ var showCmd = &cobra.Command{
 	デフォルトではパスワードは表示しない`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := db.NewCredentialRepository().GetSingleRowByItemName(args[0])
-		showFlags.DisplaySpecifyColumn(c)
+		showFlags.DisplayRow(c)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(showCmd)
 
-	showCmd.Flags().BoolVarP(&showFlags.NoPass, "all", "a", true, "show all column(without password)")
+	showCmd.Flags().BoolVarP(&showFlags.NoPass, "all", "a", true, "show all column without password")
+	showCmd.Flags().BoolVarP(&showFlags.All, "all-with-password", "", false, "show all column with password")
 	showCmd.Flags().BoolVarP(&showFlags.ItemName, "item-name", "i", false, "show item name")
 	showCmd.Flags().BoolVarP(&showFlags.UserName, "user-name", "u", false, "show user name")
 	showCmd.Flags().BoolVarP(&showFlags.Password, "password", "p", false, "show password")
 	showCmd.Flags().BoolVarP(&showFlags.Tag, "tag", "t", false, "show tag")
+	showCmd.Flags().BoolVarP(&showFlags.FormatCSV, "csv", "c", false, "output fomat csv")
+	showCmd.Flags().BoolVarP(&showFlags.FormatTable, "table", "", true, "output fomat ascii table")
 }

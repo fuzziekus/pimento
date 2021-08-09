@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/fuzziekus/pimento/config"
@@ -22,13 +23,13 @@ type Credential struct {
 
 type Credentials []Credential
 
-type CredentialRepository struct{}
+type credentialRepository struct{}
 
-func NewCredentialRepository() CredentialRepository {
-	return CredentialRepository{}
+func NewCredentialRepository() credentialRepository {
+	return credentialRepository{}
 }
 
-func (r CredentialRepository) CreateWithRawVal(item_name, user_name, password, tag string) {
+func (r credentialRepository) CreateWithRawVal(item_name, user_name, password, tag string) {
 	cipertext, err := config.RowCryptor.Encrypt(password)
 	if err != nil {
 		log.Fatal(err)
@@ -41,24 +42,24 @@ func (r CredentialRepository) CreateWithRawVal(item_name, user_name, password, t
 	}
 	res := Mgr().db.Create(&credential)
 	if res.Error != nil {
-		fmt.Println(res.Error)
+		fmt.Fprintln(os.Stderr, res.Error)
 	}
 }
 
-func (r CredentialRepository) Create(c Credential) {
+func (r credentialRepository) Create(c Credential) {
 	res := Mgr().db.Create(&c)
 	if res.Error != nil {
-		fmt.Println(res.Error)
+		fmt.Fprintln(os.Stderr, res.Error)
 	}
 }
 
-func (r CredentialRepository) GetAll() Credentials {
+func (r credentialRepository) GetAll() Credentials {
 	credentials := Credentials{}
 	Mgr().db.Find(&credentials)
 	return credentials
 }
 
-func (r CredentialRepository) GetSingleRowByItemName(item_name string) Credential {
+func (r credentialRepository) GetSingleRowByItemName(item_name string) Credential {
 	credential := Credential{
 		// ItemName: item_name,
 	}
@@ -69,7 +70,7 @@ func (r CredentialRepository) GetSingleRowByItemName(item_name string) Credentia
 	return credential
 }
 
-func (r CredentialRepository) GetSingleRowById(id int) Credential {
+func (r credentialRepository) GetSingleRowById(id int) Credential {
 	credential := Credential{
 		ID: id,
 	}
@@ -77,7 +78,7 @@ func (r CredentialRepository) GetSingleRowById(id int) Credential {
 	return credential
 }
 
-func (r CredentialRepository) UpdateRow(id int, c Credential) Credential {
+func (r credentialRepository) UpdateRow(id int, c Credential) Credential {
 	credential := Credential{
 		ID: id,
 	}

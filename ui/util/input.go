@@ -13,13 +13,13 @@ func InputString(annotation string) string {
 	var input string
 	scanner := bufio.NewScanner(os.Stdin)
 	message := "input " + annotation + "> "
-	fmt.Print(message)
+	fmt.Fprint(os.Stderr, message)
 	for scanner.Scan() {
 		input = scanner.Text()
 		if input != "" {
 			break
 		}
-		fmt.Print(message)
+		fmt.Fprint(os.Stderr, message)
 	}
 	return strings.TrimSpace(input)
 }
@@ -29,13 +29,13 @@ func InputSecretString(annotation string) string {
 	message := "input " + annotation + "> "
 
 	for input == "" {
-		fmt.Print(message)
+		fmt.Fprint(os.Stderr, message)
 		bytePassword, err := term.ReadPassword(int(int(os.Stdin.Fd())))
 		if err != nil {
 			break
 		}
 		input = string(bytePassword)
-		fmt.Println("")
+		fmt.Fprintln(os.Stderr, "")
 	}
 	return strings.TrimSpace(input)
 }
@@ -44,14 +44,14 @@ func ChoiceYN(annotation string) bool {
 	var input string
 	scanner := bufio.NewScanner(os.Stdin)
 	message := annotation + " [y/n] > "
-	fmt.Print(message)
+	fmt.Fprint(os.Stderr, message)
 
 	for scanner.Scan() {
 		input = strings.TrimSpace(scanner.Text())
 		if input == "y" || input == "n" {
 			break
 		}
-		fmt.Print("please type y or n > ")
+		fmt.Fprint(os.Stderr, "please type y or n >")
 	}
 	return input == "y"
 }
