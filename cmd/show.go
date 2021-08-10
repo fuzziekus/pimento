@@ -39,6 +39,7 @@ var showCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(showCmd)
 
+	showCmd.Flags().BoolVarP(&showFlags.NoHeader, "noheader", "n", false, "show with no header")
 	showCmd.Flags().BoolVarP(&showFlags.NoPass, "all", "a", true, "show all column without password")
 	showCmd.Flags().BoolVarP(&showFlags.All, "all-with-password", "", false, "show all column with password")
 	showCmd.Flags().BoolVarP(&showFlags.ItemName, "item-name", "i", false, "show item name")

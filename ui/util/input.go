@@ -3,8 +3,11 @@ package util
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"strings"
+	"syscall"
 
 	"golang.org/x/term"
 )
@@ -28,9 +31,21 @@ func InputSecretString(annotation string) string {
 	var input string
 	message := "input " + annotation + "> "
 
+	var fd int
+	if term.IsTerminal(syscall.Stdin) {
+		fd = syscall.Stdin
+	} else {
+		bytePassword, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			log.Fatal(err)
+		}
+		input = string(bytePassword)
+		return strings.TrimSpace(input)
+	}
+
 	for input == "" {
 		fmt.Fprint(os.Stderr, message)
-		bytePassword, err := term.ReadPassword(int(int(os.Stdin.Fd())))
+		bytePassword, err := term.ReadPassword(fd)
 		if err != nil {
 			break
 		}

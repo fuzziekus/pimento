@@ -36,14 +36,16 @@ func (e *Flags) calcCondition() {
 
 	// カラム指定がある場合は、All フラグは false にし、
 	// 対象カラムだけ更新するようにする
+	if e.All {
+		e.NoPass = false
+	}
+
 	if e.ItemName || e.UserName || e.Password || e.Tag {
 		e.All = false
 		e.NoPass = false
 	}
 
-	if e.All {
-		e.NoPass = false
-	}
+	
 
 	// CSV が指定されていれば、CSV出力を優先
 	if e.FormatCSV {

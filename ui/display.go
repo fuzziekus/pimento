@@ -32,7 +32,6 @@ func (e Flags) generateRowWithSpecifyColumn(c db.Credential) []string {
 	rtCredential := reflect.TypeOf(c)
 	uv := reflect.ValueOf(&c).Elem()
 
-	// fmt.Printf("%+v", e)
 	for i := 0; i < rtCredential.NumField(); i++ {
 		f := rtCredential.Field(i)
 		for _, key := range ColumnOrder {
@@ -88,6 +87,7 @@ func (e Flags) DisplayRows(credentials db.Credentials) {
 }
 
 func (e Flags) DisplayRow(c db.Credential) {
+	e.calcCondition()
 	table := newTableWriter()
 
 	if !e.NoHeader {
