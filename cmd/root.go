@@ -25,7 +25,6 @@ import (
 	"os"
 
 	"github.com/fuzziekus/pimento/config"
-	"github.com/fuzziekus/pimento/db"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -40,20 +39,20 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	defer db.Mgr().Close()
+	defer teardown()
 	cobra.CheckErr(rootCmd.Execute())
-	// 暗号化前にDBのコネクションをクローズ
+}
 
-	// DB を外部から使用できないよう暗号化する
+func teardown() {
 	tempDB := config.Mgr().Db.Path + ".temp"
 	if _, err := os.Stat(tempDB); !os.IsNotExist(err) {
+		// DB を外部から使用できないよう暗号化する
 		cobra.CheckErr(config.DbCryptor.EncryptFile(tempDB, config.Mgr().Db.Path))
 		// 一時的に復号していたDBファイルを削除
 		if err := os.Remove(tempDB); err != nil {
 			cobra.CheckErr(err)
 		}
 	}
-
 	// 初回起動の場合、コンフィグを設定
 	config.WriteConfig(false)
 }
