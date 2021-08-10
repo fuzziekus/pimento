@@ -40,16 +40,16 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	defer db.Mgr().Close()
 	cobra.CheckErr(rootCmd.Execute())
 	// 暗号化前にDBのコネクションをクローズ
-	db.Mgr().Close()
 
 	// DB を外部から使用できないよう暗号化する
 	tempDB := config.Mgr().Db.Path + ".temp"
 	if _, err := os.Stat(tempDB); !os.IsNotExist(err) {
 		cobra.CheckErr(config.DbCryptor.EncryptFile(tempDB, config.Mgr().Db.Path))
 		// 一時的に復号していたDBファイルを削除
-		if err := os.Remove(config.Mgr().Db.Path + ".temp"); err != nil {
+		if err := os.Remove(tempDB); err != nil {
 			cobra.CheckErr(err)
 		}
 	}
