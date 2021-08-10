@@ -33,12 +33,10 @@ var importCmd = &cobra.Command{
 	Long:  `CSVからクレデンシャルを取り込む`,
 	Run: func(cmd *cobra.Command, args []string) {
 		b, err := ioutil.ReadFile(args[0])
-		if err != nil {
-			log.Fatal(err)
-		}
+		cobra.CheckErr(err)
 
 		var credentials db.Credentials
-		csvutil.Unmarshal(b, &credentials)
+		cobra.CheckErr(csvutil.Unmarshal(b, &credentials))
 		for _, c := range credentials {
 			cipertext, err := config.RowCryptor.Encrypt(c.Password)
 			if err != nil {
