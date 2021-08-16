@@ -85,3 +85,11 @@ func (r credentialRepository) UpdateRow(id int, c Credential) Credential {
 	Mgr().db.Model(&credential).Update(&c)
 	return credential
 }
+
+func (r credentialRepository) DeleteRow(id int) Credential {
+	credential := Credential{
+		ID: id,
+	}
+	Mgr().db.Delete(&credential)
+	return credential
+}
