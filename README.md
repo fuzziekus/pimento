@@ -34,6 +34,4 @@ Flags:
       --config string       config file (default is $XDG_CONFIG_HOME/pimento/config.yaml)
   -h, --help                help for pimento
       --secret_key string   pimento secret key
-
-Use "pimento [command] --help" for more information about a command.
 ```
